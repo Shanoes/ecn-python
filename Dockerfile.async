@@ -1,0 +1,16 @@
+# Asynchronous version
+FROM python:3.8-buster
+
+COPY requirements.txt /tmp/
+
+RUN apt-get update \
+    && STATIC_DEPS=true CFLAGS="-O0" pip install -r /tmp/requirements.txt \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN useradd --create-home appuser
+WORKDIR /home/appuser
+USER appuser
+
+COPY src/AsynchOPCUA.py .
+
+ENTRYPOINT [ "python", "./AsynchOPCUA.py" ]
